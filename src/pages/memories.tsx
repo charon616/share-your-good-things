@@ -5,14 +5,14 @@
 // Each group shows the nickname at the time of posting (immutable per post).
 // Like button sends 1 GRT token and updates the like count on-chain.
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { EmotionIconWithBackground } from "../components/emotion-icon";
 import type { EmotionType } from "../components/emotion-data";
 
 import { useWallet } from "@vechain/dapp-kit-react";
 import { ThorClient } from "@vechain/sdk-network";
 import { THOR_URL } from "../config/constants";
-import { config, GRATITUDE_TOKEN_ABI, GRATITUDE_BOARD_ABI } from "@repo/config-contract";
+import { config, GRATITUDE_TOKEN_ABI, GRATITUDE_BOARD_ABI } from "../config/config";
 import { ABIContract, Address, Clause } from "@vechain/sdk-core";
 
 // Tabs component: Renders tab navigation for "Community" and "My Memories" sections.
@@ -63,7 +63,7 @@ export default function MemoriesPage({ onRequireLogin }: { onRequireLogin?: () =
   const [grtBalance, setGrtBalance] = useState<string>("-");
 
   // GRT balance fetch function
-  const fetchGrtBalance = async () => {
+  const fetchGrtBalance = useCallback(async () => {
     if (!account) {
       setGrtBalance("-");
       return;
@@ -75,15 +75,24 @@ export default function MemoriesPage({ onRequireLogin }: { onRequireLogin?: () =
         GRATITUDE_TOKEN_ABI
       );
       const balance = await tokenContract.read.balanceOf(account);
-      let value = balance;
-      if (Array.isArray(balance)) value = balance[0];
+      // Always extract the primitive value if balance is array-like (including readonly arrays)
+      function isArrayLike(val: unknown): val is { 0: string | number | bigint } {
+        return (
+          typeof val === 'object' &&
+          val !== null &&
+          'length' in val &&
+          typeof (val as { length: number }).length === 'number' &&
+          (val as { length: number }).length > 0
+        );
+      }
+      const value: string | number | bigint = isArrayLike(balance) ? balance[0] : balance as string | number | bigint;
       // GRT has 18 decimals, so show only the integer part
       const intValue = (typeof value === "bigint" ? value : BigInt(value)) / 10n ** 18n;
       setGrtBalance(intValue.toLocaleString());
     } catch {
       setGrtBalance("-");
     }
-  };
+  }, [account]);
 
   // Fetch all on-chain posts from the GratitudeBoard contract
   const getHistory = async () => {
@@ -113,8 +122,11 @@ export default function MemoriesPage({ onRequireLogin }: { onRequireLogin?: () =
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
+  useEffect(() => {
+    fetchGrtBalance();
+  }, [fetchGrtBalance]);
   useEffect(() => {
     getHistory();
   }, []);
@@ -126,7 +138,7 @@ export default function MemoriesPage({ onRequireLogin }: { onRequireLogin?: () =
   // Memoized filtered data for user's own posts
   const myMemories = useMemo(() => {
     if (!account) return [];
-    return history.filter((item) => item.user.toLowerCase() === account.toLowerCase());
+    return history.filter((item: GoodThing) => item.user.toLowerCase() === account.toLowerCase());
   }, [history, account]);
 
   const communityPosts = useMemo(() => history, [history]);
@@ -199,7 +211,7 @@ export default function MemoriesPage({ onRequireLogin }: { onRequireLogin?: () =
     });
     // Sort groups so newest are first
     return Object.entries(groups)
-      .map(([key, posts]) => ({
+      .map(([, posts]) => ({
         user: posts[0].user,
         nickname: posts[0].nickname,
         date: posts[0].timestamp,
@@ -270,7 +282,6 @@ export default function MemoriesPage({ onRequireLogin }: { onRequireLogin?: () =
                             <EmotionIconWithBackground
                               emotion={memory.feeling as EmotionType}
                               showLabel={false}
-                              fill={true}
                               size={32}
                             />
                             <span className="flex-1 text-base leading-relaxed font-normal">{memory.message}</span>

@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
 
 import { useWallet } from "@vechain/dapp-kit-react";
 import { ThorClient } from "@vechain/sdk-network";
-import { config, GRATITUDE_BOARD_ABI, GRATITUDE_TOKEN_ABI } from "@repo/config-contract";
+import { config, GRATITUDE_BOARD_ABI, GRATITUDE_TOKEN_ABI } from "../config/config";
 
 import { useNicknameContext } from "../lib/useNicknameContext";
 
@@ -110,11 +110,21 @@ export default function ProfilePage() {
           GRATITUDE_TOKEN_ABI
         );
         const balance = await tokenContract.read.balanceOf(account);
-        let value = balance;
-        if (Array.isArray(balance)) value = balance[0];
-        // GRT has 18 decimals, so show only the integer part
-        const intValue = (typeof value === "bigint" ? value : BigInt(value)) / 10n ** 18n;
-        setTokenBalance(intValue.toLocaleString());
+        // Type guard to check for array-like (including readonly arrays)
+        function isArrayLike(val: unknown): val is { 0: string | number | bigint } {
+          return (
+            typeof val === 'object' &&
+            val !== null &&
+            'length' in val &&
+            typeof (val as { length: number }).length === 'number' &&
+            (val as { length: number }).length > 0
+          );
+        }
+        const rawValue: string | number | bigint = isArrayLike(balance) ? balance[0] : balance as string | number | bigint;
+        // Convert to BigInt for calculation
+        const intValue = BigInt(rawValue) / 10n ** 18n;
+        // Set as string (only integer part)
+        setTokenBalance(intValue.toString());
       } catch {
         setTokenBalance("-");
       }

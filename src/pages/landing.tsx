@@ -5,8 +5,8 @@ import { useWallet } from "@vechain/dapp-kit-react";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
 
-export default function LandingPage({ onConnect }: { onConnect?: () => void }) {
-  const { account, connect } = useWallet();
+export default function LandingPage() {
+  const { account } = useWallet();
   const navigate = useNavigate();
 
   // If already connected, auto-redirect to /app
@@ -31,7 +31,7 @@ export default function LandingPage({ onConnect }: { onConnect?: () => void }) {
     <div className="min-h-screen w-full flex flex-col justify-center items-center relative overflow-hidden">
       <div className="relative z-10 flex flex-col items-center w-full px-4 mb-8">
         <div className="w-full flex items-center justify-center mb-8">
-          <img src="/logo.png" alt="Logo" className="w-[32rem] min-w-96" />
+          <img src="/logo.png" alt="Logo" className="w-[32rem] min-w-96 max-w-full" />
         </div>
         <h2 className="text-4xl font-bold text-center mb-2 mt-4 bg-primary">A Simple Way to Feel Better, Every Day</h2>
         <p className="text-base text-center mb-4">

@@ -13,7 +13,15 @@ export default function BottomNavigation({ onRequireLogin }: { onRequireLogin?: 
   const location = useLocation();
   const { account } = useWallet();
 
-  const navItems = [
+  type NavItem = {
+    name: string;
+    href: string;
+    icon: string;
+    isCenter?: boolean;
+    requireLogin?: boolean;
+  };
+
+  const navItems: NavItem[] = [
     {
       name: "Memories",
       href: "/memories",
@@ -34,7 +42,7 @@ export default function BottomNavigation({ onRequireLogin }: { onRequireLogin?: 
   ];
 
   // Handle navigation and login requirement
-  const handleNav = (item: any, e: React.MouseEvent) => {
+  const handleNav = (item: NavItem, e: React.MouseEvent) => {
     if (item.requireLogin && !account && onRequireLogin) {
       console.log("Login required for this action");
       e.preventDefault();

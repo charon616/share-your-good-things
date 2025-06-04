@@ -1,10 +1,7 @@
-// NicknameContext: Provides nickname state and update logic for the app.
+// NicknameContext: 
+// Provides nickname state and update logic for the app.
 // Fetches and saves nickname to Supabase, using wallet address (case-insensitive).
 // Auto-generates a guest nickname if none exists for the user.
-// Ensures nickname is always in sync with Supabase and wallet state.
-// Used throughout the app for consistent user identification.
-// Written for the "Three Good Things" DApp competition entry.
-// Author: [Your Name] 2025
 
 import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
@@ -16,7 +13,7 @@ export function NicknameProvider({ children }: { children: ReactNode }) {
   const { account } = useWallet();
   const [nickname, setNickname] = useState("");
 
-  // nickname取得・自動生成
+  // Fetch nickname from Supabase
   const fetchNickname = async () => {
     if (!account) return;
     const user_id = account.toLowerCase();
@@ -34,7 +31,7 @@ export function NicknameProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // 新しいnicknameをSupabaseに保存
+  // Update nickname in Supabase
   const updateNickname = async (newNick: string) => {
     if (!account) return false;
     const user_id = account.toLowerCase();

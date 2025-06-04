@@ -19,12 +19,7 @@ interface GoodThing {
   emotion: EmotionType | "";
 }
 
-enum TransactionStatus {
-  NotSent = "NOT_SENT",
-  Pending = "PENDING",
-  Success = "SUCCESS",
-  Reverted = "REVERTED",
-}
+type TransactionStatus = "NOT_SENT" | "PENDING" | "SUCCESS" | "REVERTED";
 
 function ThreeGoodThings({ onRequireLogin, account, goodThings, setGoodThings }: {
   onRequireLogin?: () => void,
@@ -34,7 +29,7 @@ function ThreeGoodThings({ onRequireLogin, account, goodThings, setGoodThings }:
 }) {
   const { nickname } = useNicknameContext();
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [status, setStatus] = useState<TransactionStatus>(TransactionStatus.NotSent);
+  const [status, setStatus] = useState<TransactionStatus>("NOT_SENT");
   const [txHash, setTxHash] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [numPosted, setNumPosted] = useState<number>(0); // NEW: track how many good things were posted
@@ -66,7 +61,7 @@ function ThreeGoodThings({ onRequireLogin, account, goodThings, setGoodThings }:
       setToastMsg("Please enter your nickname (username)");
       return;
     }
-    setStatus(TransactionStatus.Pending);
+    setStatus("PENDING");
     setIsLoading(true);
     setToastMsg(null);
     try {
@@ -92,7 +87,7 @@ function ThreeGoodThings({ onRequireLogin, account, goodThings, setGoodThings }:
         comment: `${account} posted good things!`,
       });
       setTxHash(result);
-      setStatus(TransactionStatus.Success);
+      setStatus("SUCCESS");
       setNumPosted(filled.length); // Store how many were posted
       setToastMsg(`You've shared ${filled.length} good thing${filled.length > 1 ? "s" : ""} with the community.`);
       setGoodThings([
@@ -101,7 +96,7 @@ function ThreeGoodThings({ onRequireLogin, account, goodThings, setGoodThings }:
         { text: "", emotion: "" },
       ]);
     } catch (error) {
-      setStatus(TransactionStatus.Reverted);
+      setStatus("REVERTED");
       setToastMsg("Failed to post. Please try again.");
       console.error("Transaction failed:", error);
     } finally {
@@ -136,7 +131,7 @@ function ThreeGoodThings({ onRequireLogin, account, goodThings, setGoodThings }:
                 />
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {Object.entries(emotionData).map(([key, data], colIdx) => {
+                {Object.entries(emotionData).map(([key, data]) => {
                   const emotionKey = key as EmotionType;
                   const bg = thing.emotion === emotionKey
                     ? data.bgClassName
@@ -176,27 +171,27 @@ function ThreeGoodThings({ onRequireLogin, account, goodThings, setGoodThings }:
           >
             {isLoading ? "Sending..." : "Send a smile:)"}
           </button>
-          {(toastMsg || status === TransactionStatus.Pending || status === TransactionStatus.Success || status === TransactionStatus.Reverted) && (
+          {(toastMsg || status === "PENDING" || status === "SUCCESS" || status === "REVERTED") && (
             <div className="w-full max-w-md mx-auto mt-3 mb-2">
               <div className="text-center text-base font-medium rounded-lg px-2 py-1"
                 style={{
                   color:
-                    status === TransactionStatus.Success
+                    status === "SUCCESS"
                       ? '#16a34a' // green-600
-                      : status === TransactionStatus.Reverted
+                      : status === "REVERTED"
                       ? '#dc2626' // red-600
-                      : status === TransactionStatus.Pending
+                      : status === "PENDING"
                       ? '#007AFF' // blue-600
                       : '#ef4444', // red-500 for toastMsg
                 }}
               >
-                {toastMsg && status !== TransactionStatus.Pending && status !== TransactionStatus.Success && status !== TransactionStatus.Reverted && (
+                {toastMsg && status !== "PENDING" && status !== "SUCCESS" && status !== "REVERTED" && (
                   <>{toastMsg}</>
                 )}
-                {status === TransactionStatus.Pending && (
+                {status === "PENDING" && (
                   <>Sending your good things to the blockchain... Please confirm the transaction in your wallet.</>
                 )}
-                {status === TransactionStatus.Success && txHash && (
+                {status === "SUCCESS" && txHash && (
                   <>
                     <div>Thank you for sharing! 🎉<br />Your good things are now on-chain.<br />
                       <span className="block mt-2 text-lg font-bold text-primary">
@@ -205,7 +200,7 @@ function ThreeGoodThings({ onRequireLogin, account, goodThings, setGoodThings }:
                     </div>
                   </>
                 )}
-                {status === TransactionStatus.Reverted && (
+                {status === "REVERTED" && (
                   <>Your good things were not posted.<br />Please check your wallet and try again.</>
                 )}
               </div>
@@ -234,7 +229,9 @@ export default function MainPage({ onRequireLogin }: { onRequireLogin?: () => vo
         if (Array.isArray(parsed) && parsed.length === 3) {
           setGoodThings(parsed);
         }
-      } catch {}
+      } catch {
+        // Ignore JSON parse errors and proceed with empty goodThings
+      }
       localStorage.removeItem("threeGoodThingsDraft");
     }
   }, []);
