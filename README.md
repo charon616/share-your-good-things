@@ -34,6 +34,7 @@ The app is based on research showing that reflecting on positive events can redu
 - VeChain DAppKit for wallet integration
 - VeChain blockchain for GRT token and post storage
 - Supabase for user profiles
+- **Icon set:** [Hugeicons](https://hugeicons.com/)
 
 ## How to run locally
 
@@ -62,10 +63,6 @@ The app is based on research showing that reflecting on positive events can redu
    ```
 
 4. Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-## Live Demo
-
-[https://share-your-good-things.vercel.app/](https://share-your-good-things.vercel.app/)
 
 ## Author
 
