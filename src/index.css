@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  width: 100%;
+  place-items: center;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  margin: 0 auto;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #F6F5EC;
+}
+
+body.landing-gradient-bg {
+  background: linear-gradient(118.78deg, #e2ddd9, #d8b4cd 11.11%, #66a6e3 22.22%, #3a91f3 33.33%, #b673e1 44.44%, #f96697 59.62%, #f28b4a 71.15%, #e8d2ae 83.65%, #cbebb2 89.9%, #2affe1);
+  min-height: 100vh;
+  width: 100vw;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 28rem;
+}
+
+#root.landing-root-fullwidth {
+  max-width: 1000px !important;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-gradient {
+  background: linear-gradient(118.78deg, #e2ddd9, #d8b4cd 11.11%, #66a6e3 22.22%, #3a91f3 33.33%, #b673e1 44.44%, #f96697 59.62%, #f28b4a 71.15%, #e8d2ae 83.65%, #cbebb2 89.9%, #2affe1);
+}
