@@ -11,10 +11,13 @@ export default defineConfig({
   ],
   css: {
     postcss: {
-      plugins: [tailwindcss], //追加
+      plugins: [tailwindcss],
     },
   },
   server: {
     host: true, // Allow external access (0.0.0.0)
   },
+  build: {
+    commonjsOptions: { transformMixedEsModules: true }
+  }
 })
