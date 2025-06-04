@@ -52,7 +52,7 @@ export type GoodThing = {
 
 // MemoriesPage: Main component for displaying memories and community posts.
 export default function MemoriesPage({ onRequireLogin }: { onRequireLogin?: () => void }) {
-  const [tab, setTab] = useState("my-memories");
+  const [tab, setTab] = useState("community");
   const [history, setHistory] = useState<GoodThing[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

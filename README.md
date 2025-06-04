@@ -1,5 +1,7 @@
 # Share Your Good Things DApp
 
+[**Live Demo**](https://share-your-good-things.vercel.app/)
+
 A modern, mobile-friendly decentralized application (DApp) for sharing daily positive moments, inspired by the "Three Good Things" method from positive psychology. Built with React, TypeScript, tailwindcss, and VeChain blockchain.
 
 [![Share Your Good Things](./docs/landing-page.png)](https://three-good-things.vercel.app)
@@ -61,9 +63,10 @@ The app is based on research showing that reflecting on positive events can redu
 
 4. Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-## Reference
+## Live Demo
 
-This project was originally based on the [Buy Me Coffee Example](https://github.com/vechain/buy-me-coffee-example) and has been significantly extended and refactored for the Three Good Things DApp competition.
+[https://share-your-good-things.vercel.app/](https://share-your-good-things.vercel.app/)
 
 ## Author
+
 Karin Kiho (June 2025)
